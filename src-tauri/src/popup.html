@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>亮度调节</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            font-family: system-ui;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .slider {
+            width: 100%;
+        }
+
+        .value {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h3>亮度调节</h3>
+        <input type="range" class="slider" min="0" max="100" value="50">
+        <div class="value">50%</div>
+    </div>
+    <script>
+        const slider = document.querySelector('.slider');
+        const value = document.querySelector('.value');
+
+        // 获取当前亮度
+        async function getCurrentBrightness() {
+            const brightness = await window.__TAURI__.invoke('get_brightness');
+            slider.value = brightness * 100;
+            value.textContent = `${Math.round(brightness * 100)}%`;
+        }
+
+        // 设置亮度
+        slider.addEventListener('input', async (e) => {
+            const brightness = e.target.value / 100;
+            value.textContent = `${e.target.value}%`;
+            await window.__TAURI__.invoke('set_brightness', { value: brightness });
+        });
+
+        // 初始化
+        getCurrentBrightness();
+    </script>
+</body>
+
+</html>

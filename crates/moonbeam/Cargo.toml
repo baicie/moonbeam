@@ -1,0 +1,56 @@
+[package]
+name = "moonbeam"
+version = "0.1.0"
+edition = "2021"
+description = "跨平台屏幕亮度控制库"
+license = "MIT"
+repository = "https://github.com/yourusername/moonbeam"
+
+
+
+[features]
+async = ["async-trait", "futures", "blocking"]
+default = ["async"]
+
+[dependencies]
+async-trait = { version = "0.1.57", optional = true }
+blocking = { version = "1.6.1", optional = true }
+cfg-if = "1.0.0"
+futures = { version = "0.3.31", optional = true }
+itertools = "0.14.0"
+thiserror = "2.0.11"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+zbus = "5.4.0"
+
+[target.'cfg(windows)'.dependencies.windows]
+version = "0.59.0"
+features = [
+    "Win32_Foundation",
+    "Win32_Devices_Display",
+    "Win32_Graphics_Gdi",
+    "Win32_Storage_FileSystem",
+    "Win32_Security",
+    "Win32_System_IO",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_System_SystemServices",
+]
+
+[target.'cfg(target_os = "macos")'.dependencies]
+core-foundation = "0.10.0"
+core-graphics = "0.24.0"
+io-kit-sys = "0.4.1"
+
+[[example]]
+name = "list_displays_async"
+path = "examples/list_displays_async.rs"
+required-features = ["async"]
+
+[[example]]
+name = "set_brightness_async"
+path = "examples/set_brightness_async.rs"
+required-features = ["async"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]
